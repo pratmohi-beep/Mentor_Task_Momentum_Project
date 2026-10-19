@@ -1,0 +1,129 @@
+<mdc-themeprovider [attr.themeclass]="darkTheme ? 'mds-theme-stable-darkWebex' : 'mds-theme-stable-lightWebex'" class="theme-root">
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Momentum home">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span>momentum</span>
+      </a>
+      <div class="theme-control">
+        <mdc-toggle aria-label="Dark theme" [checked]="darkTheme" (change)="toggleTheme($event)"></mdc-toggle>
+        <span>Dark theme</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <div class="intro">
+        <p class="eyebrow">PROFILE SETUP</p>
+        <h1>Create your profile</h1>
+        <p class="intro-copy">Tell us a little about yourself. Your progress is saved as you go.</p>
+      </div>
+
+      <section class="form-card" aria-labelledby="step-heading">
+        <nav class="stepper" aria-label="Form progress">
+          <div class="step-track" aria-hidden="true"><span [style.width.%]="progress"></span></div>
+          <ol>
+            <li *ngFor="let label of steps; let index = index" [class.active]="index === step" [class.complete]="index < step">
+              <span class="step-number" [attr.aria-current]="index === step ? 'step' : null">
+                <ng-container *ngIf="index < step; else number">✓</ng-container>
+                <ng-template #number>{{ index + 1 }}</ng-template>
+              </span>
+              <span class="step-label">{{ label }}</span>
+            </li>
+          </ol>
+        </nav>
+
+        <form [formGroup]="form" (ngSubmit)="step === 2 ? submit() : next()" novalidate>
+          <ng-container *ngIf="!submitted; else successMessage">
+            <div class="step-content">
+              <div class="section-heading">
+                <div>
+                  <p class="section-kicker">STEP 0{{ step + 1 }} OF 03</p>
+                  <h2 id="step-heading">{{ currentHeading }}</h2>
+                  <p class="section-description" *ngIf="step === 0">Start with the best way to reach you.</p>
+                  <p class="section-description" *ngIf="step === 1">Where should we send your updates?</p>
+                  <p class="section-description" *ngIf="step === 2">Take a moment to review your information.</p>
+                </div>
+                <span class="required-note" *ngIf="step < 2"><span>*</span> Required</span>
+              </div>
+
+              <div class="field-grid" *ngIf="step === 0">
+                <label class="field full-width">
+                  <span>Full name <i>*</i></span>
+                  <input formControlName="name" autocomplete="name" placeholder="e.g. Alex Morgan" [attr.aria-invalid]="hasError('name')" aria-describedby="name-error">
+                  <small id="name-error" class="field-error" *ngIf="hasError('name')">Enter your name (at least 2 characters).</small>
+                </label>
+                <label class="field">
+                  <span>Email address <i>*</i></span>
+                  <input type="email" formControlName="email" autocomplete="email" placeholder="name@example.com" [attr.aria-invalid]="hasError('email')" aria-describedby="email-error">
+                  <small id="email-error" class="field-error" *ngIf="hasError('email')">Enter a valid email address.</small>
+                </label>
+                <label class="field">
+                  <span>Phone number <i>*</i></span>
+                  <input type="tel" formControlName="phone" autocomplete="tel" placeholder="+1 (555) 123-4567" [attr.aria-invalid]="hasError('phone')" aria-describedby="phone-error">
+                  <small id="phone-error" class="field-error" *ngIf="hasError('phone')">Enter a valid phone number.</small>
+                </label>
+              </div>
+
+              <div class="field-grid" *ngIf="step === 1">
+                <label class="field full-width">
+                  <span>Street address <i>*</i></span>
+                  <input formControlName="address" autocomplete="street-address" placeholder="123 Main Street" [attr.aria-invalid]="hasError('address')" aria-describedby="address-error">
+                  <small id="address-error" class="field-error" *ngIf="hasError('address')">Enter your street address.</small>
+                </label>
+                <label class="field">
+                  <span>City <i>*</i></span>
+                  <input formControlName="city" autocomplete="address-level2" placeholder="San Francisco" [attr.aria-invalid]="hasError('city')" aria-describedby="city-error">
+                  <small id="city-error" class="field-error" *ngIf="hasError('city')">Enter your city.</small>
+                </label>
+                <label class="field">
+                  <span>Postal code</span>
+                  <input formControlName="postalCode" autocomplete="postal-code" placeholder="94105">
+                </label>
+              </div>
+
+              <div class="review-list" *ngIf="step === 2">
+                <section class="review-section">
+                  <div class="review-title"><h3>Personal details</h3><button type="button" class="edit-link" (click)="step = 0">Edit</button></div>
+                  <dl>
+                    <div><dt>Full name</dt><dd>{{ form.controls.name.value || '—' }}</dd></div>
+                    <div><dt>Email address</dt><dd>{{ form.controls.email.value || '—' }}</dd></div>
+                    <div><dt>Phone number</dt><dd>{{ form.controls.phone.value || '—' }}</dd></div>
+                  </dl>
+                </section>
+                <section class="review-section">
+                  <div class="review-title"><h3>Address</h3><button type="button" class="edit-link" (click)="step = 1">Edit</button></div>
+                  <dl>
+                    <div><dt>Street address</dt><dd>{{ form.controls.address.value || '—' }}</dd></div>
+                    <div><dt>City</dt><dd>{{ form.controls.city.value || '—' }}</dd></div>
+                    <div><dt>Postal code</dt><dd>{{ form.controls.postalCode.value || '—' }}</dd></div>
+                  </dl>
+                </section>
+              </div>
+            </div>
+
+            <footer class="form-footer">
+              <span class="save-note"><span class="save-icon" aria-hidden="true">✓</span> Your information is saved automatically</span>
+              <div class="actions">
+                <button type="button" class="button secondary" *ngIf="step > 0" (click)="previous()">Previous</button>
+                <button type="submit" class="button primary">{{ step === 2 ? 'Submit profile' : 'Continue' }} <span aria-hidden="true">→</span></button>
+              </div>
+            </footer>
+          </ng-container>
+
+          <ng-template #successMessage>
+            <div class="success-state" role="status">
+              <span class="success-check" aria-hidden="true">✓</span>
+              <p class="section-kicker">ALL SET</p>
+              <h2>Profile submitted</h2>
+              <p>Your information has been received. Thank you, {{ form.controls.name.value }}.</p>
+              <button type="button" class="button secondary" (click)="restart()">Create another profile</button>
+            </div>
+          </ng-template>
+        </form>
+      </section>
+
+      <p class="privacy-note"><span aria-hidden="true">▣</span> Your information is kept private and secure.</p>
+    </main>
+    <footer class="page-footer">© 2026 Momentum Design System <span>·</span> Built for a better experience</footer>
+  </div>
+</mdc-themeprovider>

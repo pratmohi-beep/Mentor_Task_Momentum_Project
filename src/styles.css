@@ -1,0 +1,8 @@
+@import "@momentum-design/tokens/dist/css/core/complete.css";
+@import "@momentum-design/tokens/dist/css/theme/webex/light-stable.css";
+@import "@momentum-design/tokens/dist/css/theme/webex/dark-stable.css";
+@import "@momentum-design/tokens/dist/css/typography/complete.css";
+
+html, body { min-height:100%; margin:0; }
+body { font-family: "Momentum", "CiscoSans", "Helvetica Neue", Arial, sans-serif; background:#f5f7fa; }
+* { box-sizing:border-box; }
